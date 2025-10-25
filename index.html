@@ -1,5 +1,224 @@
 <html lang="ru">
 <head>
+    <style>
+  body {
+    background: #f3f6fb;
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tabs-wrap {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+  }
+
+  .tabs-container {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+
+  .tabs-track {
+    display: flex;
+    gap: 14px;
+    transition: transform 0.35s ease;
+    will-change: transform;
+    padding: 16px;
+  }
+
+  .tab {
+    min-width: 260px;
+    flex: 0 0 auto;
+    background: linear-gradient(180deg, #f8fbff, #fff);
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(17, 24, 39, 0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .tab:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(17, 24, 39, 0.12);
+  }
+
+  .tab h4 {
+    margin: 0 0 8px;
+    font-size: 17px;
+  }
+
+  .tab p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+    flex: 1;
+  }
+
+  .tab a {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #050506;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    transition: background 0.25s ease;
+  }
+
+  .tab a:hover {
+    background: #050506;
+  }
+
+  .tabs-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #050506;
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 22px rgba(23, 102, 255, 0.18);
+    font-size: 22px;
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+
+  .tabs-btn:hover {
+    background: #050506;
+    transform: translateY(-50%) scale(1.05);
+  }
+
+  .tabs-btn.left {
+    left: 10px;
+  }
+
+  .tabs-btn.right {
+    right: 10px;
+  }
+
+  .tabs-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+    transform: translateY(-50%);
+  }
+
+  @media (max-width: 768px) {
+    .tab {
+      min-width: 200px;
+    }
+
+    .tabs-btn {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+    }
+  }
+</style>
+
+<div class="tabs-wrap">
+  <div class="tabs-container" id="tabsContainer">
+    <button class="tabs-btn left" id="btnLeft">&larr;</button>
+    <div class="tabs-track" id="tabsTrack">
+      <div class="tab">
+        <h4>Доходы и рассходы</h4>
+        <a href="https://umarfaruh.github.io/budget.rk/" target="_blank">Перейти</a>
+      </div>
+      <div class="tab">
+        <h4>Налоговый калькулятор</h4>
+        <a href="https://umarfaruh.github.io/financial_management/" target="_blank">Перейти</a>
+      </div>
+      <div class="tab">
+        <h4>Накопитель</h4>
+        <a href="https://umarfaruh.github.io/Expenses-calculate-your-expenses-correctly/" target="_blank">Перейти</a>
+      </div>
+      <div class="tab">
+        <h4>Калькулятор ипотеки</h4>
+        <a href="https://umarfaruh.github.io/mortgage/" target="_blank">Перейти</a>
+      </div>
+      <div class="tab">
+        <h4>Калькулятор депозита</h4>
+        <a href="https://umarfaruh.github.io/Deposit-calculator/" target="_blank">Перейти</a>
+      </div>
+        <div class="tab">
+        <h4>Калькулятор депозита2</h4>
+        <a href="https://umarfaruh.github.io/Deposit-interest-calculator/" target="_blank">Перейти</a>
+      </div>
+    </div>
+    <button class="tabs-btn right" id="btnRight">&rarr;</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const track = document.getElementById('tabsTrack');
+  const container = document.getElementById('tabsContainer');
+  const btnL = document.getElementById('btnLeft');
+  const btnR = document.getElementById('btnRight');
+  let pos = 0;
+  let maxScroll = 0;
+  let startX = 0, dragStart = 0, isDown = false;
+
+  function updateLimits(){
+    const trackWidth = track.scrollWidth;
+    const viewport = container.clientWidth;
+    maxScroll = Math.max(0, trackWidth - viewport);
+    pos = Math.max(-maxScroll, Math.min(0, pos));
+    track.style.transform = `translateX(${pos}px)`;
+    btnL.disabled = pos === 0;
+    btnR.disabled = Math.abs(pos) >= maxScroll;
+  }
+
+  function scrollBy(direction){
+    const step = Math.round(container.clientWidth * 0.6);
+    pos += (direction === 'left') ? step : -step;
+    pos = Math.max(-maxScroll, Math.min(0, pos));
+    track.style.transform = `translateX(${pos}px)`;
+    updateLimits();
+  }
+
+  btnL.addEventListener('click', ()=> scrollBy('left'));
+  btnR.addEventListener('click', ()=> scrollBy('right'));
+
+  track.addEventListener('pointerdown', (e)=>{
+    isDown = true;
+    startX = e.clientX;
+    dragStart = pos;
+    track.style.transition = 'none';
+    track.setPointerCapture(e.pointerId);
+  });
+  window.addEventListener('pointermove', (e)=>{
+    if(!isDown) return;
+    const dx = e.clientX - startX;
+    pos = dragStart + dx;
+    if(pos > 80) pos = 80;
+    if(pos < -maxScroll - 80) pos = -maxScroll - 80;
+    track.style.transform = `translateX(${pos}px)`;
+  });
+  window.addEventListener('pointerup', ()=>{
+    if(!isDown) return;
+    isDown = false;
+    track.style.transition = 'transform .35s ease';
+    pos = Math.max(-maxScroll, Math.min(0, pos));
+    track.style.transform = `translateX(${pos}px)`;
+    updateLimits();
+  });
+  window.addEventListener('resize', updateLimits);
+  window.addEventListener('load', ()=> setTimeout(updateLimits, 80));
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Калькулятор депозита — простой и сложный процент</title>
@@ -24,7 +243,7 @@
   h1{
     text-align:center;
     margin-bottom:20px;
-    color:#1766ff;
+    color:#050506;
   }
   label{display:block;margin-top:12px;font-weight:600;color:#333}
   input,select{
@@ -37,7 +256,7 @@
   }
   button{
     width:100%;
-    background:#1766ff;
+    background:#060707;
     color:#fff;
     border:none;
     padding:12px;
@@ -47,7 +266,7 @@
     cursor:pointer;
     transition:background .25s;
   }
-  button:hover{background:#0f4fd6}
+  button:hover{background:#1e1eff}
   .result{
     background:#f9fbff;
     margin-top:20px;
