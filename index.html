@@ -1,0 +1,126 @@
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор депозита — простой и сложный процент</title>
+<style>
+  body{
+    font-family:"Segoe UI",sans-serif;
+    background:#f3f6fb;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+  }
+  .calculator{
+    background:#fff;
+    padding:30px;
+    border-radius:14px;
+    box-shadow:0 8px 26px rgba(0,0,0,0.08);
+    max-width:440px;
+    width:90%;
+  }
+  h1{
+    text-align:center;
+    margin-bottom:20px;
+    color:#1766ff;
+  }
+  label{display:block;margin-top:12px;font-weight:600;color:#333}
+  input,select{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    margin-top:6px;
+    font-size:15px;
+  }
+  button{
+    width:100%;
+    background:#1766ff;
+    color:#fff;
+    border:none;
+    padding:12px;
+    font-size:16px;
+    border-radius:8px;
+    margin-top:20px;
+    cursor:pointer;
+    transition:background .25s;
+  }
+  button:hover{background:#0f4fd6}
+  .result{
+    background:#f9fbff;
+    margin-top:20px;
+    padding:12px;
+    border-radius:8px;
+    font-size:16px;
+    text-align:center;
+    color:#222;
+    box-shadow:inset 0 0 6px rgba(23,102,255,0.08);
+  }
+</style>
+</head>
+<body>
+  <div class="calculator">
+    <h1>Калькулятор депозита</h1>
+    <label>Первоначальный взнос (PV):</label>
+    <input type="number" id="pv" placeholder="Введите сумму">
+
+    <label>Годовая процентная ставка (r, в %):</label>
+    <input type="number" id="r" step="0.01" placeholder="Например 5 для 5%">
+
+    <label>Период (n):</label>
+    <input type="number" id="n" placeholder="Введите количество">
+
+    <label>Тип периода:</label>
+    <select id="period">
+      <option value="years">Годы</option>
+      <option value="months">Месяцы</option>
+      <option value="days">Дни</option>
+    </select>
+
+    <label>Тип процентов:</label>
+    <select id="type">
+      <option value="compound">Сложный процент</option>
+      <option value="simple">Простой процент</option>
+    </select>
+
+    <button onclick="calculate()">Рассчитать</button>
+
+    <div class="result" id="result">Результат появится здесь</div>
+  </div>
+
+<script>
+function calculate(){
+  const pv=parseFloat(document.getElementById('pv').value);
+  let r=parseFloat(document.getElementById('r').value);
+  const n=parseFloat(document.getElementById('n').value);
+  const period=document.getElementById('period').value;
+  const type=document.getElementById('type').value;
+  let fv=0;
+
+  if(isNaN(pv)||isNaN(r)||isNaN(n)){
+    document.getElementById('result').innerText="Пожалуйста, заполните все поля.";
+    return;
+  }
+
+  // Перевод ставки из % в десятичную форму
+  r = r / 100;
+
+  // Преобразуем ставку в зависимости от периода
+  if(period === "months") r = r / 12;
+  else if(period === "days") r = r / 365;
+
+  // Вычисляем по выбранной формуле
+  if(type === "compound"){
+    fv = pv * Math.pow((1 + r), n); // сложный процент
+  } else {
+    fv = pv * (1 + (r * n)); // простой процент
+  }
+
+  document.getElementById('result').innerText =
+    "Финальная сумма (FV): " + fv.toFixed(2) + "₸";
+}
+</script>
+</body>
+</html>
