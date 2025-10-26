@@ -1,6 +1,9 @@
 <html lang="ru">
 <head>
-    <style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Калькулятор депозита2</title>
+<style>
   body {
     background: #f3f6fb;
     font-family: "Segoe UI", sans-serif;
@@ -74,7 +77,7 @@
   }
 
   .tab a:hover {
-    background: #050506;
+    background: #1414ff;
   }
 
   .tabs-btn {
@@ -91,13 +94,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 22px rgba(23, 102, 255, 0.18);
+    box-shadow: 0 8px 22px rgba(10, 67, 181, 0.18);
     font-size: 22px;
     transition: background 0.25s ease, transform 0.25s ease;
   }
 
   .tabs-btn:hover {
-    background: #050506;
+    background: #1414ff;
     transform: translateY(-50%) scale(1.05);
   }
 
@@ -134,27 +137,27 @@
     <div class="tabs-track" id="tabsTrack">
       <div class="tab">
         <h4>Доходы и рассходы</h4>
-        <a href="https://umarfaruh.github.io/budget.rk/" target="_blank">Перейти</a>
+        <a href="https://umarfaruh.github.io/budget.rk/">Перейти</a>
       </div>
       <div class="tab">
         <h4>Налоговый калькулятор</h4>
-        <a href="https://umarfaruh.github.io/financial_management/" target="_blank">Перейти</a>
+        <a href="https://umarfaruh.github.io/financial_management/">Перейти</a>
       </div>
       <div class="tab">
         <h4>Накопитель</h4>
-        <a href="https://umarfaruh.github.io/Expenses-calculate-your-expenses-correctly/" target="_blank">Перейти</a>
+        <a href="https://umarfaruh.github.io/Expenses-calculate-your-expenses-correctly/">Перейти</a>
       </div>
       <div class="tab">
         <h4>Калькулятор ипотеки</h4>
-        <a href="https://umarfaruh.github.io/mortgage/" target="_blank">Перейти</a>
+        <a href="https://umarfaruh.github.io/mortgage/">Перейти</a>
       </div>
       <div class="tab">
         <h4>Калькулятор депозита</h4>
-        <a href="https://umarfaruh.github.io/Deposit-calculator/" target="_blank">Перейти</a>
+        <a href="https://umarfaruh.github.io/Deposit-calculator/">Перейти</a>
       </div>
-        <div class="tab">
-        <h4>Калькулятор депозита2</h4>
-        <a href="https://umarfaruh.github.io/Deposit-interest-calculator/" target="_blank">Перейти</a>
+      <div class="tab">
+        <h4>Калькулятор депозита 2</h4>
+        <a href="https://umarfaruh.github.io/Deposit-interest-calculator/">Перейти</a>
       </div>
     </div>
     <button class="tabs-btn right" id="btnRight">&rarr;</button>
@@ -219,9 +222,84 @@
   window.addEventListener('load', ()=> setTimeout(updateLimits, 80));
 })();
 </script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Калькулятор депозита — простой и сложный процент</title>
+</head>
+
+
+
+<body>
+<script>
+(function(){
+  const track = document.getElementById('tabsTrack');
+  const container = document.getElementById('tabsContainer');
+  const btnL = document.getElementById('btnLeft');
+  const btnR = document.getElementById('btnRight');
+  let pos = 0;
+  let maxScroll = 0;
+  let startX = 0, dragStart = 0, isDown = false;
+
+  function updateLimits(){
+    const trackWidth = track.scrollWidth;
+    const viewport = container.clientWidth;
+    maxScroll = Math.max(0, trackWidth - viewport);
+    pos = Math.max(-maxScroll, Math.min(0, pos));
+    track.style.transform = `translateX(${pos}px)`;
+    btnL.disabled = pos === 0;
+    btnR.disabled = Math.abs(pos) >= maxScroll;
+  }
+
+  function scrollBy(direction){
+    const step = Math.round(container.clientWidth * 0.6);
+    pos += (direction === 'left') ? step : -step;
+    pos = Math.max(-maxScroll, Math.min(0, pos));
+    track.style.transform = `translateX(${pos}px)`;
+    updateLimits();
+  }
+
+  btnL.addEventListener('click', ()=> scrollBy('left'));
+  btnR.addEventListener('click', ()=> scrollBy('right'));
+
+  track.addEventListener('pointerdown', (e)=>{
+    isDown = true;
+    startX = e.clientX;
+    dragStart = pos;
+    track.style.transition = 'none';
+    track.setPointerCapture(e.pointerId);
+  });
+  window.addEventListener('pointermove', (e)=>{
+    if(!isDown) return;
+    const dx = e.clientX - startX;
+    pos = dragStart + dx;
+    if(pos > 80) pos = 80;
+    if(pos < -maxScroll - 80) pos = -maxScroll - 80;
+    track.style.transform = `translateX(${pos}px)`;
+  });
+  window.addEventListener('pointerup', ()=>{
+    if(!isDown) return;
+    isDown = false;
+    track.style.transition = 'transform .35s ease';
+    pos = Math.max(-maxScroll, Math.min(0, pos));
+    track.style.transform = `translateX(${pos}px)`;
+    updateLimits();
+  });
+  window.addEventListener('resize', updateLimits);
+  window.addEventListener('load', ()=> setTimeout(updateLimits, 80));
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <style>
   body{
     font-family:"Segoe UI",sans-serif;
@@ -237,7 +315,7 @@
     padding:30px;
     border-radius:14px;
     box-shadow:0 8px 26px rgba(0,0,0,0.08);
-    max-width:440px;
+    max-width:140px;
     width:90%;
   }
   h1{
@@ -278,10 +356,10 @@
     box-shadow:inset 0 0 6px rgba(23,102,255,0.08);
   }
 </style>
-</head>
-<body>
+
+
   <div class="calculator">
-    <h1>Калькулятор депозита</h1>
+    <h1>Калькулятор депозита2</h1>
     <label>Первоначальный взнос (PV):</label>
     <input type="number" id="pv" placeholder="Введите сумму">
 
